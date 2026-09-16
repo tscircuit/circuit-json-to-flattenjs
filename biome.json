@@ -1,0 +1,13 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "files": {
+    "ignore": [
+      "dist",
+      "tests/__snapshots__",
+      "tests/fixtures/boards",
+      "bun.lock"
+    ]
+  },
+  "formatter": { "indentStyle": "space" },
+  "javascript": { "formatter": { "semicolons": "asNeeded" } }
+}

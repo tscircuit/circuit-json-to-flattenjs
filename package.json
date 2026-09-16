@@ -1,0 +1,46 @@
+{
+  "name": "@tscircuit/circuit-json-to-flattenjs",
+  "version": "0.0.1",
+  "description": "Layer-aware Circuit JSON PCB geometry conversion to FlattenJS polygons",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tscircuit/circuit-json-to-flattenjs.git"
+  },
+  "scripts": {
+    "build": "tsup index.ts --format esm --dts --sourcemap",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "format": "biome format . --write",
+    "format:check": "biome format .",
+    "gallery": "bun scripts/generate-gallery.ts"
+  },
+  "peerDependencies": {
+    "@flatten-js/core": "^1.6.14",
+    "circuit-json": "*"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@flatten-js/core": "1.6.14",
+    "@resvg/resvg-js": "^2.6.2",
+    "@tscircuit/circuit-json-util": "0.0.113",
+    "@types/bun": "^1.3.0",
+    "circuit-json": "0.0.491",
+    "circuit-json-to-connectivity-map": "0.0.30",
+    "circuit-to-svg": "0.0.423",
+    "schematic-symbols": "^0.0.245",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.3",
+    "zod": "3"
+  }
+}
