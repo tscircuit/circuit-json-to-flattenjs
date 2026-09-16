@@ -25,7 +25,8 @@ jobs:
   publish:
     # The plop template opens an automated version-bump PR. Its merge must not
     # publish another version and start a release loop.
-    if: github.event_name == 'workflow_dispatch' || !startsWith(github.event.head_commit.message, 'chore: bump version')
+    if: >-
+      github.event_name == 'workflow_dispatch' || !startsWith(github.event.head_commit.message, 'chore: bump version')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
