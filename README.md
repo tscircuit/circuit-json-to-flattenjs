@@ -9,7 +9,13 @@ Convert Circuit JSON PCB geometry into [FlattenJS](https://github.com/alexbol99/
 
 ## Usage
 
-The package is prepared as `@tscircuit/circuit-json-to-flattenjs`; it has not yet been published to npm. To work from this repository, run `bun install` and `bun run build`.
+Releases are published to GitHub Packages using the `tscircuit/plop` workflow and served through `jscdn.tscircuit.com`:
+
+```sh
+bun add https://jscdn.tscircuit.com/@tscircuit/circuit-json-to-flattenjs/latest.tgz
+```
+
+Pin a numbered version (`/<version>.tgz`) for reproducible installations. To work from this repository, run `bun install` and `bun run build`.
 
 ```ts
 import { Point } from "@flatten-js/core"
