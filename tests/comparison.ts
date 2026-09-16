@@ -56,7 +56,14 @@ export function renderComparison(fixture: VisualCase): string {
     s.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
   // Prefix reference IDs so multiple snapshots can be safely embedded in a gallery.
   const prefix = fixture.name + "-"
-  const prefixed = left
+  // Reference-renderer coordinates also contain platform-dependent final bits.
+  // Normalize numeric geometry attributes only; preserve text, IDs and font data.
+  const stableLeft = left.replace(
+    /\b(d|points|transform|viewBox|x|y|x1|y1|x2|y2|cx|cy|r|rx|ry|width|height|stroke-width)="([^"]*)"/g,
+    (_, attr, value) =>
+      `${attr}="${value.replace(/-?\d*\.?\d+(?:e[+-]?\d+)?/gi, (n: string) => String(Number(Number(n).toFixed(8))))}"`,
+  )
+  const prefixed = stableLeft
     .replace(/id="([^"]+)"/g, (_, id) => `id="${prefix}${id}"`)
     .replace(/url\(#([^)]+)\)/g, (_, id) => `url(#${prefix}${id})`)
   const embed = (svg: string, x: number) =>

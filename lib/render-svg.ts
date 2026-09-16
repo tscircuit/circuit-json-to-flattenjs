@@ -1,3 +1,4 @@
+import { polygonToSvg } from "./polygon-to-svg"
 import type { FlattenConversionResult, GeometryRole } from "./types"
 export interface FlattenSvgOptions {
   width?: number
@@ -56,7 +57,7 @@ export function renderFlattenJsToSvg(
         strokeWidth: e.role === "courtyard" ? 0.05 : 0.1,
         fillRule: "evenodd" as const,
       }
-      return `<g data-element-id="${escape(e.elementId)}" data-layer="${escape(e.layer ?? "all")}">${e.shapes.map((shape) => shape.svg(attrs)).join("")}</g>`
+      return `<g data-element-id="${escape(e.elementId)}" data-layer="${escape(e.layer ?? "all")}">${e.shapes.map((shape) => polygonToSvg(shape, attrs)).join("")}</g>`
     })
     .join("")
   // Display drilled voids using the drill color without changing polygon topology.
@@ -72,9 +73,10 @@ export function renderFlattenJsToSvg(
         return faces
           .filter((face) => face.orientation() !== outerOrientation)
           .map((face) =>
-            face
-              .toPolygon()
-              .svg({ fill: escape(colors.drill), stroke: "none" }),
+            polygonToSvg(face.toPolygon(), {
+              fill: escape(colors.drill),
+              stroke: "none",
+            }),
           )
       }),
     )

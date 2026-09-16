@@ -286,3 +286,15 @@ test("non-positive interpolated widths are reported instead of producing inverte
   if (p.route_type === "wire") p.width = -1
   expect(convert(f.circuitJson).warnings[0].message).toContain("trace width")
 })
+
+test("SVG serialization canonicalizes near-semicircle floating-point differences", async () => {
+  const { polygonToSvg } = await import("../lib/polygon-to-svg")
+  const { Arc, Segment } = await import("@flatten-js/core")
+  const render = (delta: number) => {
+    const arc = new Arc(new Point(0, 0), 1, 0, Math.PI + delta, true)
+    const polygon = new Polygon()
+    polygon.addFace([arc, new Segment(arc.end, arc.start)])
+    return polygonToSvg(polygon, { fill: "black", stroke: "none" })
+  }
+  expect(render(1e-12)).toBe(render(-1e-12))
+})
