@@ -1,6 +1,6 @@
 {
   "name": "@tscircuit/circuit-json-to-flattenjs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Layer-aware Circuit JSON PCB geometry conversion to FlattenJS polygons",
   "type": "module",
   "main": "./dist/index.js",
