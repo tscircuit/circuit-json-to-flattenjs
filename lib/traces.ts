@@ -1,4 +1,4 @@
-import { BooleanOperations, type Polygon } from "@flatten-js/core"
+import { BooleanOperations, Matrix, type Polygon } from "@flatten-js/core"
 import type { LayerRef, PcbTrace } from "circuit-json"
 import { circle, ring, stroke, withHoles, positive, type XY } from "./geometry"
 import { spanLayers } from "./layers"
@@ -39,6 +39,30 @@ function interpolatedPolygon(segments: TraceSegment[]): Polygon {
     right.push({ x: p.x - nx, y: p.y - ny })
   }
   return ring([...left, ...right.reverse()])
+}
+
+/** Subtract PCB-world (X right, Y up, millimeters) drill geometry.
+ * FlattenJS uses an absolute comparison tolerance. Very short routed segments
+ * can place intersections within that tolerance and cause a boundary conflict.
+ * Retry in micrometers, then return to millimeters, without changing global
+ * FlattenJS tolerance or approximating the copper outline.
+ */
+function subtractDrill(shape: Polygon, hole: Polygon): Polygon {
+  try {
+    return BooleanOperations.subtract(shape, hole)
+  } catch (error) {
+    if (
+      !(error instanceof Error) ||
+      error.message !== "Unresolved boundary conflict in boolean operation"
+    )
+      throw error
+    const toMicrometers = new Matrix(1000, 0, 0, 1000, 0, 0)
+    const toMillimeters = new Matrix(0.001, 0, 0, 0.001, 0, 0)
+    return BooleanOperations.subtract(
+      shape.transform(toMicrometers),
+      hole.transform(toMicrometers),
+    ).transform(toMillimeters)
+  }
 }
 
 export function traceGeometry(
@@ -139,10 +163,7 @@ export function traceGeometry(
       result
         .get(layer)!
         .map((shape) =>
-          holes.reduce(
-            (shape, hole) => BooleanOperations.subtract(shape, hole),
-            shape,
-          ),
+          holes.reduce((shape, hole) => subtractDrill(shape, hole), shape),
         )
         .filter((shape) => shape.faces.size > 0),
     )
